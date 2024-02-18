@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+sudo apt install -y neovim
 sudo apt install -y zoxide
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
