@@ -3,8 +3,8 @@ return {
   "nvim-treesitter/nvim-treesitter",         -- treesitter: Better highlighting
   "nvim-treesitter/nvim-treesitter-context", -- tresitter context
   "nvim-telescope/telescope-ui-select.nvim",
-  "https://github.com/tpope/vim-fugitive", 
-  "wellle/context.vim",                      -- context: see the context when scrolling
+  "https://github.com/tpope/vim-fugitive",
+  "wellle/context.vim", -- context: see the context when scrolling
   {
     "github/copilot.vim",
     config = function()
@@ -29,5 +29,15 @@ return {
     "ggandor/leap-spooky.nvim",
     dependencies = { "wellle/context.vim" },
     config = true
-  }
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = "nightfly",
+        }
+      }
+    end
+  },
 }

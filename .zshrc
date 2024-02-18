@@ -108,7 +108,7 @@ alias zshconfig="nvim ~/.zshrc"
 alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias b="bat"
 alias v="nvim"
-alias cd="z"
+alias cd='z'
 alias cat="bat"
 alias tree="exa --tree"
 alias ls="exa"
@@ -126,4 +126,4 @@ export FZF_CTRL_T_OPTS="
   --bind 'ctrl-/:change-preview-window(down|hidden|)'
   --bind 'ctrl-u:preview-up'
   --bind 'ctrl-d:preview-down'"
-
+  eval "$(zoxide init zsh)"
