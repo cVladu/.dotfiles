@@ -5,6 +5,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 sudo apt install -y ripgrep
 sudo apt install -y fd-find
+sudo apt install -y thefuck
 
 sudo apt install -y bat
 sudo ln -s /usr/bin/batcat /usr/bin/bat

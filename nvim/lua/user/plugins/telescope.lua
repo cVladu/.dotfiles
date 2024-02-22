@@ -42,9 +42,9 @@ return {
     vim.keymap.set("n", "<leader>ld", function() builtin.diagnostics({ bufnr = 0 }) end, {})
     vim.keymap.set("n", "<leader>lD", function() builtin.diagnostics({ bufnr = nil }) end, {})
     -- Git
-    vim.keymap.set("n", "<leader>gf", builtin.git_files, {})
-    vim.keymap.set("n", "<leader>gc", builtin.git_commits, {})
-    vim.keymap.set("n", "<leader>gb", builtin.git_branches, {})
+    vim.keymap.set("n", "<leader>lgf", builtin.git_files, {})
+    vim.keymap.set("n", "<leader>lgc", builtin.git_commits, {})
+    vim.keymap.set("n", "<leader>lgb", builtin.git_branches, {})
     -- Wrap preview window
     vim.api.nvim_create_autocmd("User", {
       pattern = "TelescopePreviewerLoaded",

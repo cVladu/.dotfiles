@@ -47,4 +47,3 @@ vim.opt.splitright = true
 vim.opt.termguicolors = true
 vim.opt.undofile = true
 vim.opt.signcolumn = "auto"
-vim.opt.statusline = "%-t[%-M%-R]%-y%=line:%l/%L(%p)[col:%v]%=%{FugitiveStatusline()}"
