@@ -12,6 +12,18 @@ return {
     end
   },
   {
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    config = function()
+      require("codeium").setup({
+        enable_chat = true
+      })
+    end
+  },
+  {
     "hrsh7th/cmp-copilot",
   },
   {
@@ -25,4 +37,10 @@ return {
     dependencies = { "wellle/context.vim" },
     config = true
   },
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts) require 'lsp_signature'.setup(opts) end
+  }
 }

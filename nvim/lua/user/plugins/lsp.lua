@@ -2,6 +2,35 @@ return {
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
   {
+    "mfussenegger/nvim-lint",
+    config = function()
+      local nvim_lint = require('lint')
+      nvim_lint.linters_by_ft = {
+        python = { 'flake8', },
+      }
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+        callback = function()
+          require("lint").try_lint()
+        end,
+      })
+    end
+  },
+  {
+    "mhartington/formatter.nvim",
+    config = function()
+      require("formatter").setup({
+        filetype = {
+          python = {
+            require("formatter.filetypes.python").black,
+          }
+        }
+      })
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+        command = ":FormatWrite"
+      })
+    end
+  },
+  {
     "neovim/nvim-lspconfig",
     dependencies = { "nvim-telescope/telescope.nvim", "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip" },
     config = function()
@@ -12,7 +41,7 @@ return {
 
       local lspconfig = require('lspconfig')
       -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-      local servers = {'clangd', 'pyright', 'bashls', 'rust_analyzer'}
+      local servers = { 'clangd', 'pyright', 'bashls', 'rust_analyzer' }
       for _, lsp in ipairs(servers) do
         lspconfig[lsp].setup {
           -- on_attach = my_custom_on_attach,

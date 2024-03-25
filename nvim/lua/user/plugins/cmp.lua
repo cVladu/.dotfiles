@@ -46,6 +46,7 @@ return {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'copilot' },
+        { name = 'codeium' },
       }),
       experimental = {
         ghost_text = true

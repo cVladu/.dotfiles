@@ -122,7 +122,7 @@ alias ls="exa"
 export FZF_DEFAULT_COMMAND="fd --type file --hidden --color=always"
 export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
 export FZF_CTRL_T_OPTS="
-  --preview 'cat -n --color=always {}'
+  --preview 'bat -n --color always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'
   --bind 'ctrl-u:preview-up'
   --bind 'ctrl-d:preview-down'"
@@ -146,3 +146,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
