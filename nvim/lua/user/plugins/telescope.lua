@@ -24,8 +24,7 @@ return {
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader><leader>", builtin.resume)
     -- Fuzzy finders
-    vim.keymap.set("n", "<leader>hf", function() builtin.find_files({hidden=true, no_ignore=true, no_ignore_parent=true}) end, {})
-    vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
+    vim.keymap.set("n", "<leader>pf", function() builtin.find_files({hidden=true, no_ignore=true, no_ignore_parent=true}) end, {})
     vim.keymap.set("n", "<leader>sp", builtin.live_grep, {})
     vim.keymap.set({ "n", "v" }, "<leader>sw", function()
       local word = vim.fn.expand("<cword>")
