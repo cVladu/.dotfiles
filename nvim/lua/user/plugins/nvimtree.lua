@@ -26,6 +26,6 @@ return {
         relativenumber = true,
       }
     })
-    vim.keymap.set('n', '<leader>e', require("nvim-tree.api").tree.toggle, opts)
+    vim.keymap.set('n', '<leader>e', function() require("nvim-tree.api").tree.toggle{find_file=true} end, opts)
   end,
 }
