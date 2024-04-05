@@ -1,15 +1,16 @@
 return {
   "nvim-telescope/telescope.nvim",
   tag = "0.1.5",
-  dependencies = { "nvim-lua/plenary.nvim", {
-    'nvim-telescope/telescope-fzf-native.nvim',
-    build = 'make',
-    config = function()
-      require('telescope').load_extension('fzf')
-    end
-  }
+  dependencies = { 
+    "nvim-lua/plenary.nvim", 
+    {
+      'nvim-telescope/telescope-fzf-native.nvim',
+      build = 'make',
+    },
+    "nvim-telescope/telescope-live-grep-args.nvim",
   },
   config = function()
+    local lga_actions = require("telescope-live-grep-args.actions")
     require("telescope").setup({
       extensions = {
         fzf = {
@@ -17,23 +18,34 @@ return {
           override_generic_sorter = true,
           override_file_sorter = true,
           case_mode = "smart_case"
+        },
+        live_grep_args = {
+          auto_quoting = true,
+          mappings = {
+            i = {
+              ["<C-k>"] = lga_actions.quote_prompt(),
+              ["<C-h>"] = lga_actions.quote_prompt({ postfix = " --hidden " }),
+              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --no-ignore " }),
+            },
+            n = {
+              ["<C-k>"] = lga_actions.quote_prompt(),
+              ["<C-h>"] = lga_actions.quote_prompt({ postfix = " --hidden " }),
+              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --no-ignore " }),
+            }
+          }
         }
       }
     })
-
+    require('telescope').load_extension('fzf')
+    require("telescope").load_extension("live_grep_args")
     local builtin = require("telescope.builtin")
+    local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
     vim.keymap.set("n", "<leader><leader>", builtin.resume)
     -- Fuzzy finders
     vim.keymap.set("n", "<leader>pf", function() builtin.find_files({hidden=true, no_ignore=true, no_ignore_parent=true}) end, {})
-    vim.keymap.set("n", "<leader>sp", builtin.live_grep, {})
-    vim.keymap.set({ "n", "v" }, "<leader>sw", function()
-      local word = vim.fn.expand("<cword>")
-      builtin.grep_string({ search = word })
-    end)
-    vim.keymap.set({ "n", "v" }, "<leader>sW", function()
-      local word = vim.fn.expand("<cWORD>")
-      builtin.grep_string({ search = word })
-    end)
+    vim.keymap.set("n", "<leader>sp", require('telescope').extensions.live_grep_args.live_grep_args, {})
+    vim.keymap.set("n", "<leader>sw", live_grep_args_shortcuts.grep_word_under_cursor, {})
+    vim.keymap.set("v", "<leader>sw", live_grep_args_shortcuts.grep_visual_selection, {})
     vim.keymap.set("n", "<leader>/", builtin.current_buffer_fuzzy_find, {})
     -- Lists
     vim.keymap.set("n", "<leader>lm", builtin.marks, {})
