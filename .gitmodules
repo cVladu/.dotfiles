@@ -1,0 +1,6 @@
+[submodule "windows_terminal"]
+	path = windows_terminal
+	url = git@github.com:cVladu/windows_terminal.git
+[submodule "vimium"]
+	path = vimium
+	url = git@github.com:cVladu/vimium.git
