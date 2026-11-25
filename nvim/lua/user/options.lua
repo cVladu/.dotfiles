@@ -18,7 +18,7 @@ vim.opt.foldclose = ""
 vim.opt.foldcolumn = "auto"
 vim.opt.foldenable = true
 vim.opt.foldlevelstart = 99
-vim.opt.foldmethod = "syntax"
+-- vim.opt.foldmethod = "indent"
 vim.opt.foldopen = "insert,jump,mark,percent,search" 
 -- searching options
 vim.opt.hlsearch = true

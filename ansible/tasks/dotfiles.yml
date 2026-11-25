@@ -1,0 +1,27 @@
+---
+- name: Ensure ~/.config exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config"
+    state: directory
+    mode: "0755"
+
+- name: Install config directories
+  ansible.posix.synchronize:
+    src: "{{ dotfiles_dir }}/{{ item }}/"
+    dest: "{{ ansible_env.HOME }}/.config/{{ item }}/"
+    delete: true
+    rsync_opts: ["--exclude=.git"]
+  loop: [nvim, gh-dash, wezterm]
+
+- name: Install dotfiles (existing files are backed up)
+  ansible.builtin.copy:
+    src: "{{ dotfiles_dir }}/{{ item.src }}"
+    dest: "{{ ansible_env.HOME }}/{{ item.dest }}"
+    mode: preserve
+    backup: true
+  loop:
+    - { src: .fzf.zsh, dest: .fzf.zsh }
+    - { src: .zshrc, dest: .zshrc }
+    - { src: .zprofile, dest: .zprofile }
+    - { src: .zshrc.zni, dest: zshrc.zni }
+    - { src: .p10k.zsh, dest: .p10k.zsh }

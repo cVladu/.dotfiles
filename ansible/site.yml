@@ -1,0 +1,19 @@
+---
+# Usage (from this directory):
+#   ansible-playbook site.yml -K                 # everything
+#   ansible-playbook site.yml -K --tags packages # only install_packages
+#   ansible-playbook site.yml --tags dotfiles    # only dotfiles
+- name: Set up dotfiles
+  hosts: local
+  vars:
+    dotfiles_dir: "{{ playbook_dir | dirname }}"
+    gh_version: "2.105.0"
+    zsh_custom: "{{ ansible_env.HOME }}/.oh-my-zsh/custom"
+  tasks:
+    - name: Install packages
+      ansible.builtin.import_tasks: tasks/packages.yml
+      tags: [packages]
+
+    - name: Install dotfiles
+      ansible.builtin.import_tasks: tasks/dotfiles.yml
+      tags: [dotfiles]

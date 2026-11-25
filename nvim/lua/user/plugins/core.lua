@@ -27,7 +27,7 @@ return {
     end
   },
   {
-    "ggandor/leap.nvim",
+    url = "https://codeberg.org/andyg/leap.nvim",
     config = function()
       vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
       vim.keymap.set('n', 'S', '<Plug>(leap-from-wingow)')
@@ -51,5 +51,11 @@ return {
     event = "VeryLazy",
     opts = {},
     config = function(_, opts) require 'lsp_signature'.setup(opts) end
-  }
+  },
+    {
+    "lmgraf/wsl-clipboard.nvim",
+    opts = {
+      mode = "sync", -- options: "system", "sync", "focus"
+    },
+  },
 }

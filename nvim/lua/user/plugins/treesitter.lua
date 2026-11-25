@@ -11,5 +11,11 @@ return {
       }
     end,
   },
-  "nvim-treesitter/nvim-treesitter-context", -- tresitter context
+  -- { "nvim-treesitter/nvim-treesitter-context", -- tresitter context
+  --   opts = {
+  --     enable = function(_, buftype)
+  --       return buftype ~= 'markdown'
+  --     end,
+  --   },
+  -- },
 }

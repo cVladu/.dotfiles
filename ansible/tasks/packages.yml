@@ -1,0 +1,127 @@
+---
+- name: Install apt packages
+  become: true
+  ansible.builtin.apt:
+    name: [ripgrep, fd-find, thefuck, bat, exa, zsh, git, curl]
+    state: present
+    update_cache: true
+
+- name: Link batcat to bat
+  become: true
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: /usr/bin/bat
+    state: link
+
+- name: Install neovim snap
+  become: true
+  community.general.snap:
+    name: nvim
+    classic: true
+
+- name: Install zoxide
+  ansible.builtin.shell: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/bin/zoxide"
+
+- name: Clone fzf
+  ansible.builtin.git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: "{{ ansible_env.HOME }}/.fzf"
+    depth: 1
+    update: false
+
+- name: Install fzf binary
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.fzf/install --bin"
+  args:
+    creates: "{{ ansible_env.HOME }}/.fzf/bin/fzf"
+
+# --- GitHub CLI ---
+- name: Ensure local bin/man dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ ansible_env.HOME }}/.local/bin"
+    - "{{ ansible_env.HOME }}/.local/share/man/man1"
+
+- name: Check installed gh version
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/gh --version"
+  register: gh_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install gh {{ gh_version }}
+  # Skipped in --check: tempfile/unarchive can't be simulated, so gh_tmp.path would be undefined
+  when:
+    - not ansible_check_mode
+    - gh_version not in (gh_installed.stdout | default(''))
+  block:
+    - name: Create temp dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: gh_tmp
+
+    - name: Download gh tarball (checksum verified)
+      ansible.builtin.get_url:
+        url: "https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_linux_amd64.tar.gz"
+        dest: "{{ gh_tmp.path }}/gh.tar.gz"
+        checksum: "sha256:https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_checksums.txt"
+        mode: "0644"
+
+    - name: Extract gh
+      ansible.builtin.unarchive:
+        src: "{{ gh_tmp.path }}/gh.tar.gz"
+        dest: "{{ gh_tmp.path }}"
+        remote_src: true
+
+    - name: Copy gh binary
+      ansible.builtin.copy:
+        src: "{{ gh_tmp.path }}/gh_{{ gh_version }}_linux_amd64/bin/gh"
+        dest: "{{ ansible_env.HOME }}/.local/bin/gh"
+        mode: "0755"
+        remote_src: true
+
+    - name: Copy gh man pages
+      ansible.builtin.shell: cp {{ gh_tmp.path }}/gh_{{ gh_version }}_linux_amd64/share/man/man1/* {{ ansible_env.HOME }}/.local/share/man/man1/
+      changed_when: true
+  always:
+    - name: Remove temp dir
+      ansible.builtin.file:
+        path: "{{ gh_tmp.path }}"
+        state: absent
+      when: gh_tmp.path is defined
+
+- name: List gh extensions
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/gh extension list"
+  register: gh_ext
+  changed_when: false
+  failed_when: false
+
+- name: Install gh extensions (needs `gh auth login` first)
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/gh extension install {{ item }}"
+  loop: [dlvhdr/gh-dash, dlvhdr/gh-enhance]
+  when: item not in gh_ext.stdout
+  ignore_errors: true
+
+# --- Shell ---
+- name: Install oh-my-zsh
+  ansible.builtin.shell: >
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    "" --unattended --keep-zshrc
+  args:
+    creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
+
+- name: Clone powerlevel10k
+  ansible.builtin.git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: "{{ zsh_custom }}/themes/powerlevel10k"
+    depth: 1
+    update: false
+
+- name: Clone zsh-autosuggestions
+  ansible.builtin.git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ zsh_custom }}/plugins/zsh-autosuggestions"
+    update: false
